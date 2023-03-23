@@ -13,5 +13,11 @@ spreadsheetName = input()
 workbook1 = openpyxl.Workbook()
 worksheet = workbook1.active
 
+#Add headings:
+worksheet["A1"] = "Time (ms):"
+worksheet["B1"] = "Target:"
+worksheet["C1"] = "Valve:"
+worksheet["D1"] = "Difference:"
+
 #Save the spreadsheet to a file, named per the input collected earlier
 workbook1.save(spreadsheetName+".xlsx")
