@@ -7,7 +7,7 @@
 
 #Imports
 import openpyxl #Documentation: https://openpyxl.readthedocs.io/en/stable/
-import os #Documentation: 
+import os
 
 #Ask user for the name of the spreadsheet and store it.
 print("Please input the name of the spreadsheet: ")
@@ -17,16 +17,20 @@ spreadsheetName = input()
 workbook1 = openpyxl.Workbook()
 worksheet = workbook1.active
 
-#Open the text file and read the contents
-sourceText = open("CAPTURE.TXT")
-sourceContent = sourceText.read()
+#Open the text file
+sourceText = open("CAPTURE.TXT", "r")
 
-#Split the contents of the text file into a list of lines.
-sourceContent.split()
+i = 1
+endOfFile = False
 
-#Iterate over each line to print the contents
-for line in sourceContent:
+#Iterate over each line to print the contents, ending when an empty line is returned
+while(not endOfFile):
+    sourceContent = sourceText.readline(i)
     print(sourceContent)
+    i += 1
+
+    if(sourceContent == ""):
+        endOfFile = True
 
 #Add headings:
 worksheet["A1"] = "Time (ms):"
