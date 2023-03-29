@@ -12,8 +12,8 @@ import openpyxl #Documentation: https://openpyxl.readthedocs.io/en/stable/
 import os
 
 #Ask user for the name of the spreadsheet and store it.
-print("Please input the name of the spreadsheet: ")
-spreadsheetName = input()
+#print("Please input the name of the spreadsheet: ")
+spreadsheetName = "Test"#input()
 
 #Instantiate a new workbook object, and select the sheet
 workbook1 = openpyxl.Workbook()
@@ -45,19 +45,41 @@ while(not endOfFile):
 
     print(sourceContent)
 
+    sourceContent = sourceContent.rstrip("\n")
+
     #Check the first character of the content, and send it to the appropriate cell
     if(not sourceContent[0] == "T") and (not sourceContent[0] == "F"):
         worksheet["A" + str(j + 1)] = sourceContent
     if(sourceContent[0] == "T"):
-        worksheet["B" + str(j)] = sourceContent
+        worksheet["B" + str(j)] = sourceContent[2:] #Strips the T: from in front of the target valve position
     if(sourceContent[0] == "V"):
-        worksheet["C" + str(j)] = sourceContent
+        worksheet["C" + str(j)] = sourceContent[2:] #Strips the V: from the measured valve position
 
     i += 1
 
     #For every three rows of data from the txt file, we need to write one row of the spreadsheet, so j increases at 1/3 the rate of i
     if(i % 3 == 0):
         j += 1
+
+#First and last few rows sometimes display errant data, so delete them. 30 rows per second, so -25 rows is only losing about 1 second of data.
+worksheet.delete_rows(2, 10)
+worksheet.delete_rows(j-15, j)
+
+#Iterate over the spreadsheet to remove NaN, outliers. Then remove all rows with a blank value, shift rows up to fill empty space, and calculate difference.
+columns = ["B", "C"]
+
+for column in columns:
+    for row in range (2,j):
+
+        #Replace all nan values and outliers (less than 5%, greater than 95%)
+        if(worksheet[str(column) + str(row)].value == None):
+            worksheet[str(column) + str(row)] = ""
+        if(worksheet[str(column) + str(row)].value == "nan"):
+            worksheet[str(column) + str(row)] = ""
+        #elif(int(worksheet[str(column) + str(row)].value) > 95):
+        #    worksheet[str(column) + str(row)] = ""
+        #elif(int(worksheet[str(column) + str(row)].value) < 5):
+        #    worksheet[str(column) + str(row)] = ""
 
 #Save the spreadsheet to a file, named per the input collected earlier
 workbook1.save(spreadsheetName+".xlsx")
