@@ -76,10 +76,16 @@ for column in columns:
             worksheet[str(column) + str(row)] = ""
         if(worksheet[str(column) + str(row)].value == "nan"):
             worksheet[str(column) + str(row)] = ""
-        #elif(int(worksheet[str(column) + str(row)].value) > 95):
-        #    worksheet[str(column) + str(row)] = ""
-        #elif(int(worksheet[str(column) + str(row)].value) < 5):
-        #    worksheet[str(column) + str(row)] = ""
+
+#Iterate over the spreadsheet and convert all strings to floats:
+columns = ["A", "B", "C"]
+
+for column in columns:
+    for row in range (2,j):
+        #Only attempt to convert to float IF the value is a string type, and if it is not blank
+        if((type(worksheet[str(column) + str(row)].value) == str) and not (worksheet[str(column) + str(row)].value == "")):
+            worksheet[str(column) + str(row)] = float(worksheet[str(column) + str(row)].value)
+        
 
 #Save the spreadsheet to a file, named per the input collected earlier
 workbook1.save(spreadsheetName+".xlsx")
