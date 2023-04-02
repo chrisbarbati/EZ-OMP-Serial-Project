@@ -10,6 +10,19 @@
 #Imports
 import openpyxl #Documentation: https://openpyxl.readthedocs.io/en/stable/
 import os
+import serial
+
+#Ask user for desired COM port (temporarily set as 4)
+print("What COM port # should be read from?")
+#comPort = input()
+comPort = 5
+
+#Open a serial port, baud rate 9600, timeout 1/10 of a second
+ser1 = serial.Serial('COM' + str(comPort), 9600, timeout = .1)
+
+#Simple test of readline() function. Remove me later4
+while(True):
+    print(ser1.readline())
 
 #Ask user for the name of the spreadsheet and store it.
 #print("Please input the name of the spreadsheet: ")
