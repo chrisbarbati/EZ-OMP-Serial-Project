@@ -12,17 +12,21 @@ import openpyxl #Documentation: https://openpyxl.readthedocs.io/en/stable/
 import os
 import serial
 
-#Ask user for desired COM port (temporarily set as 4)
-print("What COM port # should be read from?")
+#Ask user for desired COM port (temporarily set as 5)
+#print("What COM port # should be read from?")
 #comPort = input()
 comPort = 5
 
-#Open a serial port, baud rate 9600, timeout 1/10 of a second
-ser1 = serial.Serial('COM' + str(comPort), 9600, timeout = .1)
+#Open a serial port, baud rate 9600
+ser1 = serial.Serial('COM' + str(comPort), 9600)
 
 #Simple test of readline() function. Remove me later4
 while(True):
-    print(ser1.readline())
+    data = str(ser1.readline()) #Arduino is configured to add a carriage return at end of each line
+    data = data.lstrip("b'")
+    data = data.rstrip("'")
+    data = data.rstrip("\\r\\n") #Strip out the b'' from the serial library, and escape the escape characters to remove \r and \n
+    print(data)
 
 #Ask user for the name of the spreadsheet and store it.
 #print("Please input the name of the spreadsheet: ")
@@ -32,12 +36,6 @@ spreadsheetName = "Test"#input()
 workbook1 = openpyxl.Workbook()
 worksheet = workbook1.active
 
-#Open the text file
-sourceText = open("CAPTURE.TXT", "r")
-
-#i iterates over each line in the txt file, j iterates at 1/3 the speed for each line output in the spreadsheet
-i = 1
-j = 2
 endOfFile = False
 
 #Add headings:
