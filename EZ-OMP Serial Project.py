@@ -5,18 +5,14 @@
 #Goal is to create a serial logger that will parse serial data from COM port directly into .xlsx file. 
 #Will start with basic spreadsheet functionality, then move to parsing existing text file captured from serial, THEN try to add serial read functionality.
 
-#Need to add: Filter out nan values, outliers, and blanks, then remove all blank cells and calculate difference.
-
 #Imports
 import openpyxl #Documentation: https://openpyxl.readthedocs.io/en/stable/
 import os
 import serial
 from pytimedinput import timedKey #Allows a timeout on the input function, which I will use to interrupt the loop.
 
-#Ask user for desired COM port (temporarily set as 5)
-#print("What COM port # should be read from?")
-#comPort = input()
-comPort = 5
+print("What COM port # should be read from?")
+comPort = input()
 
 #Open a serial port, baud rate 9600
 ser1 = serial.Serial('COM' + str(comPort), 9600)
@@ -28,8 +24,8 @@ i = 1
 j = 1
 
 #Ask user for the name of the spreadsheet and store it.
-#print("Please input the name of the spreadsheet: ")
-spreadsheetName = "Test2"#input()
+print("Please input the name of the spreadsheet: ")
+spreadsheetName = input()
 
 #Instantiate a new workbook object, and select the sheet
 workbook1 = openpyxl.Workbook()
@@ -39,6 +35,7 @@ worksheet = workbook1.active
 worksheet["A1"] = "Time (ms):"
 worksheet["B1"] = "Target:"
 worksheet["C1"] = "Valve:"
+worksheet["D1"] = "Difference:"
 
 #Simple test of readline() function. Remove me later4
 while(not stopReading):
@@ -75,21 +72,18 @@ while(not stopReading):
     else:
         continue
 
+worksheet.delete_rows(j-2, j)
 
+#Iterate over the sheet and calculate the difference between commanded valve position and actual valve position
 
-# #First and last few rows sometimes display errant data, so delete them. 30 rows per second, so -25 rows is only losing about 1 second of data.
-# worksheet.delete_rows(2, 10)
-# worksheet.delete_rows(j-15, j)
+for row in range (2, j-2):
+    target = float(worksheet["B" + str(row)].value)
+    actual = float(worksheet["C" + str(row)].value)
 
-# #Iterate over the spreadsheet and convert all strings to floats:
-# columns = ["A", "B", "C"]
+    difference = abs(target-actual) #Sign is not important, only magnitude, so we'll take the absolute value
 
-# for column in columns:
-#     for row in range (2,j):
-#         #Only attempt to convert to float IF the value is a string type, and if it is not blank
-#         if((type(worksheet[str(column) + str(row)].value) == str) and not (worksheet[str(column) + str(row)].value == "")):
-#             worksheet[str(column) + str(row)] = float(worksheet[str(column) + str(row)].value)
-        
+    worksheet["D" + str(row)] = difference
+
 
 #Save the spreadsheet to a file, named per the input collected earlier
 workbook1.save(spreadsheetName+".xlsx")
