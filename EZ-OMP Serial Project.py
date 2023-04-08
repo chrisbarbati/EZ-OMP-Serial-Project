@@ -10,9 +10,11 @@ import openpyxl #Documentation: https://openpyxl.readthedocs.io/en/stable/
 import os
 import serial
 from pytimedinput import timedKey #Allows a timeout on the input function, which I will use to interrupt the loop.
+import pyinputplus as pyip #To validate the user input filename and COM port #
+import re
 
 print("What COM port # should be read from?")
-comPort = input()
+comPort = pyip.inputInt()
 
 #Open a serial port, baud rate 9600
 ser1 = serial.Serial('COM' + str(comPort), 9600)
@@ -20,12 +22,21 @@ ser1 = serial.Serial('COM' + str(comPort), 9600)
 #Variable to hold whether user wants to stop reading (default False)
 stopReading = False
 
+#i counts the current iteration of the loop, j counts every third iteration to move to the next row
 i = 1
 j = 1
 
+#Regex & custom input function to validate that spreadsheet name does not contain non-alphanumeric characters
+sheetNameCheck = re.compile("\w")
+
+def inputCheck(spreadsheetName):
+    if(not sheetNameCheck.search(spreadsheetName)):
+        raise Exception("Invalid input. Alphanumeric values only.")
+    return spreadsheetName
+
 #Ask user for the name of the spreadsheet and store it.
 print("Please input the name of the spreadsheet: ")
-spreadsheetName = input()
+spreadsheetName = pyip.inputCustom(inputCheck)
 
 #Instantiate a new workbook object, and select the sheet
 workbook1 = openpyxl.Workbook()
