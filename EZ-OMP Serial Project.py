@@ -2,9 +2,6 @@
 #Serial Logger for EZ-OMP
 #Capture serial data in real time & create an Excel Spreadsheet
 
-#Goal is to create a serial logger that will parse serial data from COM port directly into .xlsx file. 
-#Will start with basic spreadsheet functionality, then move to parsing existing text file captured from serial, THEN try to add serial read functionality.
-
 #Imports
 import openpyxl #Documentation: https://openpyxl.readthedocs.io/en/stable/
 import os
@@ -48,7 +45,6 @@ worksheet["B1"] = "Target:"
 worksheet["C1"] = "Valve:"
 worksheet["D1"] = "Difference:"
 
-#Simple test of readline() function. Remove me later4
 while(not stopReading):
 
     data = str(ser1.readline()) #Arduino is configured to add a carriage return at end of each line
