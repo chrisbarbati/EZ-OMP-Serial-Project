@@ -79,7 +79,7 @@ while(not stopReading):
     if(timedOut):
         continue
     elif(not userKeystroke == ""): #If the user strikes any key, userKeystroke will not be empty, and the loop will break
-        break
+        stopReading = True
     else:
         continue
 
