@@ -40,10 +40,15 @@ workbook1 = openpyxl.Workbook()
 worksheet = workbook1.active
 
 #Add headings:
-worksheet["A1"] = "Time (ms):"
-worksheet["B1"] = "Target:"
-worksheet["C1"] = "Valve:"
-worksheet["D1"] = "Difference:"
+cells = ["A1", "B1", "C1", "D1"]
+headings = ["Time (ms):", "Target:", "Valve:", "Difference:"]
+
+k = 0
+
+for cell in cells:
+    worksheet[cell] = headings[k]
+    k += 1
+
 
 while(not stopReading):
 
